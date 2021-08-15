@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizza Check</title>
-   <!-- Bootstrap CSS -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
-    
-    </head>
+
+</head>
+
 <body>
 
     <div>
@@ -19,27 +22,227 @@
 
         <div>
             <form action="" id="idInfoPizza" class="form-group m-3 p-3 text-center border-bottom border-warning">
-                
+
                 <label for="idNome" class="form-label">Nome:</label>
                 <input type="text" id="idNome" name="nmNome" class="form-control-sm border-1 border-warning me-3">
 
-                <label for="idTamanho" class="form-label">Tamanho:</label>
-                <input type="text" id="idTamanho" name="nmTamanho" class="form-control-sm border-1 border-warning me-3 ">
+                <label for="idTamanho" class="form-label">Tamanho (cm):</label>
+                <input type="text" id="idTamanho" name="nmTamanho" placeholder="ex: 20" class="form-control-sm border-1 border-warning me-3 ">
 
-                <label for="idPreco" class="form-label">Preço:</label>
-                <input type="text" id="idPreco" name="nmPreco" class="form-control-sm border-1 border-warning me-3">
+                <label for="idPreco" class="form-label">Preço (R$):</label>
+                <input type="text" id="idPreco" name="nmPreco" placeholder="ex: 20.00" class="form-control-sm border-1 border-warning me-3">
 
                 <div>
-                    <input type="button" value="Incluir" id="idIncluir" class="btn border-warning m-3">
-    
-                    <input type="button" value="Consultar" id="idConsulta" class="btn border-warning m-3">
+                    <input type="submit" value="Incluir" id="idIncluir" class="btn border-warning m-3">
+
+                    <input type="submit" value="Consultar" id="idConsultar" class="btn border-warning m-3">
                 </div>
             </form>
 
+            <div class="row m-2">
+                <div id="idItensAdd" class="col-md-3 text-center border-end border-warning ">
+                    <table id="idTbItensAdd" class="text-center table clItensAdd ">
+                        <caption class="text-center">Itens já incluídos para comparação</caption>
+                        <thead> 
+                            <th id="idItensAdd">Itens Adicionados</th>                                
+                        </thead>
+
+                        <tbody id="idTBItensAdd" class="text-center">
+                            <tr id="idTrTBItensAdd"></tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="idConsulta" class="col-md-9 text-center">
+                    <table id="idTbConsulta" class="text-center table">
+                        <caption class="text-center">Consulta de custo-benefício</caption>
+                        <thead> 
+                            <tr>
+                                <th id="idItem">Item</th>
+                                <th id="idNome">Nome</th>
+                                <th id="Tamanho">Tamanho</th>
+                                <th id="Preço">Preço</th>
+                                <th id="idPrecoCm2">Preço/cm²</th>
+                                <th id="idDiferenca">Diferença %</th>
+                        </thead>
+
+                        <tbody id="idTBTrCustoBen">
+                            <tr id="idTBTrCustoBen"></tr>
+                            
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
         </div>
     </div>
-  <!-- Option 1: Bootstrap Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous">
+    </script>
+
+    <script>
     
+        // *** BTN INCLUIR ***
+        var btIncluir = document.getElementById("idIncluir")
+    
+        btIncluir.addEventListener("click", function(event){
+        event.preventDefault();
+    
+        //capturar o form completo 
+        var formulario = document.querySelector("#idInfoPizza")
+        console.log(formulario)
+
+        var nomes = pegarNomes(formulario)
+        console.log(nomes)
+
+        var tamanhos = pegarTamanhos(formulario)
+        console.log(tamanhos)
+
+        var precos = pegarPrecos(formulario)
+        console.log(precos)
+
+        var numItem = gerarItem(nomes)
+        console.log(numItem)
+
+        var precoscm2 = gerarPrecosCm2(tamanhos, precos)
+        console.log(precoscm2)
+
+        //Tabela Itens Add:
+
+        //Criar nova linha para a tabela Itens Add 
+        var pizzaTr = montaTr(nomes,tamanhos,precos)
+
+         //Adicionar a nova linha na tabela Itens Add
+        var tBodyItens = document.getElementById("idTrTBItensAdd")
+        tBodyItens.appendChild(pizzaTr)
+
+         var dadosCustoBen = salvarDadosCustoBen(numItem,nomes,tamanhos,precos,precosCm2)
+         console.log(dadosCustoBen)
+
+        })
+
+        // *** BTN CONSULTAR ***
+        var btConsultar = document.getElementById("idConsultar")
+    
+        btConsultar.addEventListener("click", function(event){
+        event.preventDefault();
+
+        //Tabela Custo Benefício:
+
+        for(let i = 0; i < numItem.length; i++){
+            //Criar nova linha para a tabela CB
+            var pizzaTrCB = montaTrCB(dadosCustoBen,i)
+            //Adicionar a nova linha na tabela
+            var tBodyItensCB = document.getElementById("idTBTrCustoBen")
+            tBodyItensCB.appendChild(pizzaTrCB)
+
+        }
+
+        })
+
+        // *** FUNÇÕES GERAIS ***
+    
+        let nomes = []
+        function pegarNomes(formulario){
+            nomes.push(formulario.nmNome.value)
+            return nomes
+        }
+
+        let tamanhos = []
+        function pegarTamanhos(formulario){
+            tamanhos.push(formulario.nmTamanho.value)
+            return tamanhos
+        }
+
+        let precos = []
+        function pegarPrecos(formulario){
+            precos.push(formulario.nmPreco.value)
+            return precos
+        }
+
+        let numItem = []
+        function gerarItem(nomes){
+            numItem.push(nomes.length)
+            return numItem
+        }
+
+        let precosCm2 = []
+        function gerarPrecosCm2(tamanhos, precos){
+            const pi = 3.14
+            let calculo = precos[precos.length-1] / (pi * (tamanhos[tamanhos.length-1]/2)**2)
+            precosCm2.push(calculo)
+            return precosCm2
+        }
+
+        //Cria UMA linha (um tr) ITENS ADD
+    function montaTr(nomes,tamanhos,precos){
+        let pizzaTr = document.createElement("tr")
+
+        pizzaTr.appendChild(montaTd(nomes[nomes.length-1]))
+        pizzaTr.appendChild(montaTd(tamanhos[tamanhos.length-1] + " cm"))
+        pizzaTr.appendChild(montaTd(precos[precos.length-1]))
+
+        return pizzaTr
+    }
+
+    //Cria UMA coluna (um td) ITENS ADD
+    function montaTd(dado){
+        let pizzaTd = document.createElement("td")
+        pizzaTd.classList.add("p-3")
+        
+        
+
+        pizzaTd.textContent = dado
+
+        return pizzaTd
+    }
+
+    // ARRAY DADOS CB
+    let dadosCustoBen =[]
+    function salvarDadosCustoBen(numItem,nomes,tamanhos,precos,precosCm2){
+        dadosCustoBen.push([numItem[numItem.length-1],nomes[nomes.length-1],tamanhos[tamanhos.length-1],precos[precos.length-1],precosCm2[precosCm2.length-1]])
+        return dadosCustoBen
+
+    }
+
+    //Cria UMA linha (um tr)  CUSTOBEN
+    function montaTrCB(dadosCustoBen, i){                
+        let pizzaTrCB = document.createElement("tr")
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][0]))
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][1]))
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][2] + " cm"))
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][3]))
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][4]))
+                    
+        return pizzaTrCB
+
+    }
+
+    //Cria UMA coluna (um td) CUSTOBEN
+    function montaTdCB(dado){
+        let pizzaTdCB = document.createElement("td")
+        pizzaTdCB.classList.add("p-3")
+    
+
+        pizzaTdCB.textContent = dado
+
+        return pizzaTdCB
+    }
+
+    // Odenar valores por preco/cm²
+
+        
+
+
+
+    </script>
 </body>
 </html>
+
+
