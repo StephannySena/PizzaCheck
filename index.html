@@ -181,7 +181,9 @@
         let precosCm2 = []
         function gerarPrecosCm2(tamanhos, precos){
             const pi = 3.14
-            let calculo = precos[precos.length-1] / (pi * (tamanhos[tamanhos.length-1]/2)**2)
+            let preco = precos[precos.length-1]
+            let tamanho = tamanhos[tamanhos.length-1]
+            let calculo = preco / (pi * (tamanho /2) **2)
             precosCm2.push(calculo)
             return precosCm2
         }
@@ -189,7 +191,9 @@
         let diferenca = ["Melhor Custo Benefício"]
         function gerarDiferenca(dadosCustoBen){
             for (let i = 0; i < dadosCustoBen.length - 1; i++) {
-                let resultado = ((dadosCustoBen[i+1][3] / dadosCustoBen[i][3]) -1) *100
+                let precoCm2A =dadosCustoBen[i][3]
+                let precoCm2B = dadosCustoBen[i+1][3]
+                let resultado = ((precoCm2B / precoCm2A) -1) *100
                 diferenca.push(resultado.toFixed(2)+ "%")
             }
             return diferenca
