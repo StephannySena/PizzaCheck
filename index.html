@@ -113,6 +113,7 @@
         var precoscm2 = gerarPrecosCm2(tamanhos, precos)
         console.log(precoscm2)
 
+
         //Tabela Itens Add:
 
         //Criar nova linha para a tabela Itens Add 
@@ -122,8 +123,10 @@
         var tBodyItens = document.getElementById("idTrTBItensAdd")
         tBodyItens.appendChild(pizzaTr)
 
-         var dadosCustoBen = salvarDadosCustoBen(numItem,nomes,tamanhos,precos,precosCm2)
+         var dadosCustoBen = salvarDadosCustoBen(nomes,tamanhos,precos,precosCm2)
          console.log(dadosCustoBen)
+
+         
 
         })
 
@@ -134,15 +137,18 @@
         event.preventDefault();
 
         //Tabela Custo Benefício:
+        var diferenca = gerarDiferenca(dadosCustoBen)
+        console.log(diferenca)
 
         for(let i = 0; i < numItem.length; i++){
             //Criar nova linha para a tabela CB
-            var pizzaTrCB = montaTrCB(dadosCustoBen,i)
+            var pizzaTrCB = montaTrCB(dadosCustoBen, numItem, diferenca, i)
             //Adicionar a nova linha na tabela
             var tBodyItensCB = document.getElementById("idTBTrCustoBen")
             tBodyItensCB.appendChild(pizzaTrCB)
 
         }
+
 
         })
 
@@ -180,6 +186,15 @@
             return precosCm2
         }
 
+        let diferenca = ["Melhor Custo Benefício"]
+        function gerarDiferenca(dadosCustoBen){
+            for (let i = 0; i < dadosCustoBen.length - 1; i++) {
+                let resultado = ((dadosCustoBen[i+1][3] / dadosCustoBen[i][3]) -1) *100
+                diferenca.push(resultado.toFixed(2)+ "%")
+            }
+            return diferenca
+        }
+
         //Cria UMA linha (um tr) ITENS ADD
     function montaTr(nomes,tamanhos,precos){
         let pizzaTr = document.createElement("tr")
@@ -205,20 +220,35 @@
 
     // ARRAY DADOS CB
     let dadosCustoBen =[]
-    function salvarDadosCustoBen(numItem,nomes,tamanhos,precos,precosCm2){
-        dadosCustoBen.push([numItem[numItem.length-1],nomes[nomes.length-1],tamanhos[tamanhos.length-1],precos[precos.length-1],precosCm2[precosCm2.length-1]])
+    function salvarDadosCustoBen(nomes,tamanhos,precos,precosCm2){
+        dadosCustoBen.push([nomes[nomes.length-1],tamanhos[tamanhos.length-1],precos[precos.length-1],precosCm2[precosCm2.length-1]])
+
+        dadosCustoBen.sort(ordenarCustoBen)
+
         return dadosCustoBen
 
     }
 
+    function ordenarCustoBen(a,b){
+        if (a[3] > b[3]){
+            return 1
+        }
+        if(b[3] > a[3]){
+            return -1
+        }
+        else return 0
+
+    }
+
     //Cria UMA linha (um tr)  CUSTOBEN
-    function montaTrCB(dadosCustoBen, i){                
+    function montaTrCB(dadosCustoBen, numItem, diferenca, i){                
         let pizzaTrCB = document.createElement("tr")
+        pizzaTrCB.appendChild(montaTdCB(numItem[i]))
         pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][0]))
-        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][1]))
-        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][2] + " cm"))
-        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][3]))
-        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][4]))
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][1] + " cm"))
+        pizzaTrCB.appendChild(montaTdCB(dadosCustoBen[i][2]))
+        pizzaTrCB.appendChild(montaTdCB((dadosCustoBen[i][3].toFixed(2))))
+        pizzaTrCB.appendChild(montaTdCB(diferenca[i]))
                     
         return pizzaTrCB
 
